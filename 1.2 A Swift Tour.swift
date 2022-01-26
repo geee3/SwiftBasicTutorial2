@@ -267,7 +267,6 @@ func calculateStatistics(scores: [Int]) -> (min: Int, max: Int, sum: Int) {
     }
     return (min, max, sum)
 }
-
 let statistics = calculateStatistics(scores: [5, 3, 100, 3, 9])
 print(statistics.sum)
 print(statistics.1)
@@ -523,3 +522,312 @@ print(triangleAndSquare.triangle.sideLength)
 
 let optionalSquare: Square? = Square(sideLength: 2.5, name: "optional square")
 let sideLength = optionalSquare?.sideLength
+
+/*
+ Enumerations and Structures
+ 
+ Use enum to create an enumeration. Like classes and all other named types,
+ enumerations can have methods associated with them.
+ */
+
+enum Rank: Int {
+    case ace = 1
+    case two, three, four, five, six, seven, eight, nine, ten
+    case jack, queen, king
+    
+    func simpleDescription() -> String {
+        switch self {
+        case .ace:
+            return "ace"
+        case .jack:
+            return "jack"
+        case .queen:
+            return "queen"
+        case .king:
+            return "king"
+        default:
+            return String(self.rawValue)
+        }
+    }
+}
+let ace = Rank.ace
+let aceRawValue = ace.rawValue
+
+/*
+ By default, Swift assigns the raw values starting at zero and incrementing by one
+ each time, but you can change this behavior by explicitly specifying values. In
+ the example above, Ace is explicitly given a raw value of 1, and the rest of the
+ raw values are assigned in order. You can also use strings or floating-point
+ numbers as the raw type of an enumeration. Use the rawValue property to
+ access the raw value of an enumeration case.
+ 
+ Use the init?(rawValue:) initializer to make an instance of an enumeration
+ from a raw value. It returns either the enumeration case matching the raw value
+ or nil if there's no matching Rank.
+ 
+ The case values of an enumeration are actual values, not just another way of
+ writing their raw values. In fact, in cases where there isn't a meaningful raw
+ value, you don't have to provide one.
+ */
+
+enum Suit {
+    case spades, hearts, diamonds, clubs
+    
+    func simpleDescription() -> String {
+        switch self {
+        case .spades:
+            return "spades"
+        case .hearts:
+            return "hearts"
+        case .diamonds:
+            return "diamonds"
+        case .clubs:
+            return "clubs"
+        }
+    }
+}
+let hearts = Suit.hearts
+let heartsDescription = hearts.simpleDescription()
+
+/*
+ If an enumeration has raw values, those values are determined as part of the
+ declaration, which means every instance of a particular enumeration case
+ always has the same raw value. Another choice for enumeration cases is to have
+ values associated with the case-these values are determined when you make
+ the instance, and they can be different for each instance of an enumeration
+ case. You can think of the associated values as behaving like stored properties
+ of the enumeration case instance. For example, consider the case of requesting
+ the sunrise and sunset times from a server. The server either responds with the
+ requested information, or it responds with a description of what went wrong.
+ */
+
+enum ServerResponse {
+    case result(String, String)
+    case failure(String)
+}
+
+let success = ServerResponse.result("6:00 am", "8:09 pm")
+let failure = ServerResponse.failure("Out of cheese.")
+
+switch success {
+case let .result(sunrise, sunset):
+    print("Sunrise is at \(sunrise) and sunset is at \(sunset).")
+case let .failure(message):
+    print("Failure... \(message)")
+}
+
+/*
+ Use struct to create a structure. Structures support many of the same
+ behaviors as classes, including methods and initializers. One of the most
+ important differences between structures and classes is that structures are
+ always copied when they're passed around in your code, but classes are passed
+ by reference.
+ */
+
+struct Card {
+    var rank: Rank
+    var suit: Suit
+    func simpleDescription() -> String {
+        return "The \(rank.simpleDescription()) of \(suit.simpleDescription())"
+    }
+}
+let threeOfSpades = Card(rank: .three, suit: .spades)
+let threeOfSpadesDescription = threeOfSpades.simpleDescription()
+
+/*
+ Protocols and Extensions
+ 
+ Use protocol to declare a protocol.
+ Classes, enumerations, and structs can all adopt protocols.
+ */
+
+protocol ExampleProtocol {
+    var simpleDescription: String { get }
+    mutating func adjust()
+}
+
+class SimpleClass: ExampleProtocol {
+    var simpleDescription: String = "A very simple class."
+    var anotherProperty: Int = 69105
+    func adjust() {
+        simpleDescription += " Now 100% adjusted."
+    }
+}
+var a = SimpleClass()
+a.adjust()
+let aDescription = a.simpleDescription
+
+struct SimpleStructure: ExampleProtocol {
+    var simpleDescription: String = "A simple structure"
+    mutating func adjust() {
+        simpleDescription += " (adjusted)"
+    }
+}
+var b = SimpleStructure()
+b.adjust()
+let bDescription = b.simpleDescription
+
+/*
+ Notice the use of the mutating keyword in the declaration of SimpleStructure
+ to mark a method that modifies the structure. The declaration of SimpleClass
+ doesn't need any of its methods marked as mutating because methods on a
+ class can always modify the class.
+ 
+ Use extension to add functionality to an existing type, such as new methods and
+ computed properties. You can use an extension to add protocol conformance to
+ a type that's declared elsewhere, or even to a type that you imported from a
+ library or framework.
+ */
+
+extension Int: ExampleProtocol {
+    var simpleDescription: String {
+        return "The number \(self)"
+    }
+    mutating func adjust() {
+        self += 42
+    }
+}
+print(7.simpleDescription)
+
+/*
+ You can use a protocol name just like any other named type-for example, to
+ create a collection of objects that have different types but that all conform to a
+ single protocol. When you work with values whose type is a protocol type,
+ methods outside the protocol definition aren't available.
+ */
+
+let protocolValue: ExampleProtocol = a
+print(protocolValue.simpleDescription)
+
+/*
+ Even though the variable protocolValue has a runtime type of SimpleClass, the
+ compiler treats it as the given type of ExampleProtocol. This means that you
+ can't accidentally access methods or properties that the class implements in
+ addition to its protocol conformance.
+ */
+
+/*
+ Error Handling
+ 
+ You represent errors using any type that adopts the Error protocol. Use throw to
+ throw an error and throws to mark a function that can throw an error. If you
+ throw an error in a function, the tunction returns immediately and the code that
+ called the function handles the error.
+ */
+
+enum PrinterError: Error {
+    case outOfPaper
+    case noToner
+    case onFire
+}
+
+func send(job: Int, toPrinter printerName: String) throws -> String {
+    if printerName == "Never Has Toner" {
+        throw PrinterError.noToner
+    }
+    return "Job sent"
+}
+
+/*
+ There are several ways to handle errors. One way is to use do-catch. Inside the
+ do block, you mark code that can throw an error by writing try in front of it. Inside
+ the catch block, the error is automatically given the name error unless you give
+ it a different name.
+ */
+
+do {
+    let printerResponse = try send(job: 1040, toPrinter: "Bi Sheng")
+    print(printerResponse)
+} catch {
+    print(error)
+}
+
+/*
+ You can provide multiple catch blocks that handle specific errors. You write a
+ pattern after catch just as you do after case in a switch.
+ */
+
+do {
+    let printerResponse = try send(job: 1440, toPrinter: "Gutenberg")
+    print(printerResponse)
+} catch PrinterError.onFire {
+    print("I'll just put this over here, with the rest of the fire.")
+} catch let printerError as PrinterError {
+    print("Printer error: \(printerError)")
+} catch {
+    print(error)
+}
+
+/*
+ Another way to handle errors is to use try? to convert the result to an optional. If
+ the function throws an error, the specific error is discarded and the result is nil.
+ Otherwise, the result is an optional containing the value that the function
+ returned.
+ 
+ Use defer to write a block of code that's executed after all other code in the
+ function, just before the function returns. The code is executed regardless of
+ whether the function throws an error. You can use defer to write setup and
+ cleanup code next to each other, even though they need to be executed at
+ different times.
+ */
+
+var fridgeIsOpen = false
+let fridgeContent = ["milk", "eggs", "leftovers"]
+
+func fridgeContains(_ food: String) -> Bool {
+    fridgeIsOpen = true
+    defer {
+        fridgeIsOpen = false
+    }
+    
+    let result = fridgeContent.contains(food)
+    return result
+}
+fridgeContains("banana")
+print(fridgeIsOpen)
+
+/*
+ Generics
+ 
+ Write a name inside angle brackets to make a generic function or type. You can
+ make generic forms of functions and methods, as well as classes, enumerations,
+ and structures.
+ */
+
+func makeArray<Item>(repeating item: Item, numberOfTimes: Int) -> [Item] {
+    var result: [Item] = []
+    for _ in 0..<numberOfTimes {
+        result.append(item)
+    }
+    return result
+}
+makeArray(repeating: "knock", numberOfTimes: 4)
+
+enum OptionalValue<Wrapped> {
+    case none
+    case some(Wrapped)
+}
+var possibleInteger: OptionalValue<Int> = .none
+possibleInteger = .some(100)
+
+/*
+ Use where right before the body to specify a list of requirements-for example, to
+ require the type to implement a protocol, to require two types to be the same, or
+ to require a class to have a particular superclass.
+ 
+ Writing <T: Equatable> is the same as writing <T> ... where T: Equatable.
+ */
+
+func anyCommonElements<T: Sequence, U: Sequence>(_ lhs: T, _ rhs: U) -> Bool
+where T.Element: Equatable, T.Element == U.Element
+{
+    for lhsItem in lhs {
+        for rhsItem in rhs {
+            if lhsItem == rhsItem {
+                return true
+            }
+        }
+    }
+    return false
+}
+anyCommonElements([1, 2, 3], [3])
