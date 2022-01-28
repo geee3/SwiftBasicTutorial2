@@ -333,7 +333,119 @@ var surveyAnswer: String?
  has a value; please use it."
  */
 
-let convertedNumber = Int("123")
+let possibleNumber = "123"
+let convertedNumber = Int(possibleNumber)
 if convertedNumber != nil {
-    print("convertedNumber has an integer value of \(convertedNumber!).")
+    print("The string \"\(possibleNumber)\" has an integer value of \(convertedNumber!).")
 }
+
+/*
+ Optional Binding
+ 
+ You use optional binding to find out whether an optional contains a value, and if
+ so, to make that value available as a temporary constant or variable. Optional
+ binding can be used with if and while statements to check for a value inside an
+ optional, and to extract that value into a constant or variable, as part of a single
+ action.
+ */
+
+if let actualNumber = Int(possibleNumber) {
+    print("The string \"\(possibleNumber)\" has an integer value of \(actualNumber)")
+} else {
+    print("The string \"\(possibleNumber)\" couldn't be converted to an integer")
+}
+
+/*
+ Error Handling
+ 
+ You use error handling to respond to error conditions your program may
+ encounter during execution. In contrast to optionals, which can use the
+ presence or absence of a value to communicate success or failure of a function,
+ error handling allows you to determine the underlying cause of failure, and,
+ if necessary, propagate the error to another part of your program.
+ 
+ When a function encounters an error condition, it throws an error. The function's
+ caller can then catch the error and respond appropriately.
+ */
+
+func canThrowAnError() throws {
+    // this function may or may not throw an error
+}
+
+/*
+ A function indicates that it can throw an error by including the throws keyword in
+ its declaration. When you call a function that can throw an error, you prepend the
+ try keyword to the expression.
+ 
+ Swift automatically propagates errors out of their current scope until they're
+ handled by a catch clause.
+ */
+
+do {
+    try canThrowAnError()
+    // no error was thrown
+} catch {
+    // an error was thrown
+}
+
+/*
+ A do statement creates a new containing scope, which allows errors to be
+ propagated to one or more catch clauses.
+ */
+
+/*
+ Assertions and Preconditions
+ 
+ Assertions and preconditions are checks that happen at runtime. You use them to
+ make sure an essential condition is satisfied before executing any further code. If
+ the Boolean condition in the assertion or precondition evaluates to true, code
+ execution continues as usual. If the condition evaluates to false, the current
+ state of the program is invalid; code execution ends, and your app is terminated.
+ You use assertions and preconditions to express the assumptions you make and
+ the expectations you have while coding, so you can include them as part of your
+ code. Assertions help you find mistakes and incorrect assumptions during
+ development, and preconditions help you detect issues in production.
+ 
+ You write an assertion by calling the assert(_:_:file:line:) function from the
+ Swift standard library. You pass this function an expression that evaluates to true
+ or false and a message to display if the result of the condition is false. For
+ example:
+ */
+
+let age = 3
+assert(age >= 0, "A person's age can't be less than zero.")
+
+/*
+ If the code already checks the condition, you use the
+ assertionFailure(_:file:line:) function to indicate that an assertion has
+ failed. For example:
+ */
+
+if age > 10 {
+    print("You can ride the roller-coaster or the ferris wheel.")
+} else if age >= 0 {
+    print("You can ride the ferris wheel.")
+} else {
+    assertionFailure("A person's age can't be less than zero.")
+}
+
+/*
+ Enforcing Preconditions
+ 
+ Use a precondition whenever a condition has the potential to be false, but must
+ definitely be true for your code to continue execution. For example, use a
+ precondition to check that a subscript isn't out of bounds. or to check that a
+ function has been passed a valid value. You write a precondition by calling the
+ precondition(_:_:file:line:) function. You pass this function an expression
+ that evaluates to true or false and a message to display if the result of the
+ condition is a false. For example:
+ */
+
+precondition(age >= 0, "A person's age can't be less than zero.")
+
+/*
+ You can also call the preconditionFailure(_:file:line:) function to indicate
+ that a failure has occurred-for example, if the default case of a switch was taken,
+ but all valid input data should have been handled by one of the switch's other
+ cases.
+ */
