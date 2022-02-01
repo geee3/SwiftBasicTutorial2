@@ -135,3 +135,149 @@ if hasHeader {
 } else {
     rowHeight = contentHeight + 20
 }
+
+/*
+ Nil-Coalescing Operator
+ 
+ The nil-coalescing operator (a ?? b) unwraps an optional a if it contains a value,
+ or returns a default value b if a is nil. The expression a is always of an optional
+ type. The expression b must match the type that's stored inside a. The example
+ below uses the nil-coalescing operator to choose between a default color name and
+ an optional user-defined color name:
+ */
+
+let defaultColorName = "red"
+var userDefinedColorName: String?
+
+var colorNameToUse = userDefinedColorName ?? defaultColorName
+
+/*
+ The userDefinedColorName variable is defined as an optional String, with a
+ default value of nil. Beacuse userDefinedColorName is of an optional type, you
+ can use the nil-coalescing operator to consider its value. In the example above,
+ the operator is used to determine an initial value for a String variable called
+ colorNameToUse. Because userDefinedColorName is nil, the expression
+ userDefinedColorName ?? defaultColorName returns the value of "red"
+ */
+
+/*
+ Range Operators
+ 
+ The closed range operator (a...b) defines a range that runs from a to be, and
+ includes the values a and b. The value of a must not be greater than b. The
+ closed range operator is useful when iterating over a range in which you want all
+ of the values to be used, such as with a for-in loop:
+ */
+
+for index in 1...5 {
+    print("\(index) times 5 is \(index * 5)")
+}
+
+/*
+ The half-open range operator (a..<b) defines a range that runs from a to b, but
+ doesn't include b. It's said to be half-open because it contains its first value, but
+ not its final value. As the closed range operator, the value of a must not be
+ greater than b. If the value of a is equal to b, then the resulting range will be
+ empty.
+ */
+
+let names = ["Anna", "Alex", "Brian", "Jack"]
+let count = names.count
+for i in 0..<count {
+    print("Person \(i + 1) is called \(names[i])")
+}
+
+/*
+ The closed range operator has an alternative from for ranges that continue as far
+ as possible in one direction-for example, a range that includes all the elements
+ of an array from index 2 to the end of the array. In these cases, you can omit the
+ value from one side of the range operator. This kind of range is called a one-sided
+ range because the operator has a value on only one side. For example:
+ */
+
+for name in names[2...] {
+    print(name)
+}
+
+for name in names[...2] {
+    print(name)
+}
+
+/*
+ The half-open range operator also has a one-sided from that's written with only
+ its final value. Just like when you include a value on both sides, the final value isn't
+ part of the range. For example:
+ */
+
+for name in names[..<2] {
+    print(name)
+}
+
+/*
+ Logical Operators
+ 
+ Logical operators modify or combine the Boolean logic values true and false.
+ Swift supports the three standard logical operators found in C-based languages:
+ - Logical NOT (!a)
+ - Logical AND (a && b)
+ - Logical OR (a || b)
+ */
+
+/*
+ The logical NOT operator (!a) inverts a Boolean value so that true becomes
+ false, and false becomes true.
+ */
+
+let allowedEntry = false
+if !allowedEntry {
+    print("ACCESS DENIED")
+}
+
+/*
+ The logical AND operator (a && b) creates logical expressions where both values
+ must be true for the overall expression to also be true.
+ 
+ If either value is false, the overall expression will also be false. In fact, if the
+ first value is false, the second value won't even be evaluated, because it can't
+ possibly make the overall expression equate to true. This is known as short-
+ circuit evaluation.
+ */
+
+let enteredDoorCode = true
+let passedRetinaScan = false
+if enteredDoorCode && passedRetinaScan {
+    print("Welcome!")
+} else {
+    print("ACCESS DENIED")
+}
+
+/*
+ The logical OR operator (a || b) is an infix operator made from two adjacent
+ pipe characters. You use it to create logical expressions in which only one of the
+ two values has to be true for the overall expression to be true.
+ 
+ Like the Logical AND operator above, the Logical OR operator uses short-circuit
+ evaluation to consider its expressions. If the left side of a Logical OR expression
+ is true, the right side isn't evaluated, because it can't change the outcome of the
+ overall expression.
+ */
+
+let hasDoorKey = false
+let knowsOverridePassword = true
+if hasDoorKey || knowsOverridePassword {
+    print("Welcome!")
+} else {
+    print("ACCESS DENIED")
+}
+
+/*
+ You can combine multiple logical operators to create longer compound
+ expressions. And it's sometimes useful to include parentheses when they're not
+ strictly needed, to make the intention of a complex expression easier to read.
+ */
+
+if (enteredDoorCode && passedRetinaScan) || hasDoorKey || knowsOverridePassword {
+    print("Welcome!")
+} else {
+    print("ACCESS DENIED")
+}
